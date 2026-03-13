@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-# aplikasi_manajemen_tiket_konser
-
-A new Flutter project.
-=======
-# Minpro_1_Pemrograman-Aplikasi-Bergerak
 
 # 🎟️ Konser Island - Aplikasi Manajemen Tiket Konser
 
