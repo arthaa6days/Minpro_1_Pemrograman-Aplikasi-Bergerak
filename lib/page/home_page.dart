@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:aplikasi_manajemen_tiket_konser/model/ticket.dart';
 import 'package:aplikasi_manajemen_tiket_konser/page/ticket_form_page.dart';
+import 'package:aplikasi_manajemen_tiket_konser/provider/theme_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -113,12 +115,18 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final themeProvider = Provider.of<ThemeProvider>(context);
     
     return Scaffold(
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
         title: const Text('KONSER ISLAND', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2)),
         actions: [
+          IconButton(
+            icon: Icon(themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+            onPressed: () => themeProvider.toggleTheme(!themeProvider.isDarkMode),
+            tooltip: 'Ganti Tema',
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _fetchData,
@@ -251,7 +259,7 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(height: 4),
                       Text(
                         ticket.artist,
-                        style: TextStyle(color: Colors.grey.shade700, fontWeight: FontWeight.w600, fontSize: 13),
+                        style: TextStyle(color: colorScheme.onSurfaceVariant, fontWeight: FontWeight.w600, fontSize: 13),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -303,15 +311,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildIconInfo(IconData icon, String label) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 14, color: Colors.grey.shade500),
+        Icon(icon, size: 14, color: colorScheme.outline),
         const SizedBox(width: 4),
         Flexible(
           child: Text(
             label,
-            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+            style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -322,15 +331,16 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildPaginationControls() {
     final totalPages = (_totalCount / _pageSize).ceil();
+    final colorScheme = Theme.of(context).colorScheme;
     if (totalPages <= 1) return const SizedBox.shrink();
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Colors.grey.shade200)),
+        color: colorScheme.surface,
+        border: Border(top: BorderSide(color: colorScheme.outlineVariant.withOpacity(0.2))),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 4, offset: const Offset(0, -2)),
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, -2)),
         ],
       ),
       child: Row(
@@ -338,7 +348,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           Text(
             'Hal ${_currentPage + 1} / $totalPages',
-            style: TextStyle(color: Colors.grey.shade700, fontWeight: FontWeight.bold, fontSize: 13),
+            style: TextStyle(color: colorScheme.onSurfaceVariant, fontWeight: FontWeight.bold, fontSize: 13),
           ),
           Row(
             children: [
@@ -359,15 +369,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildPageButton({required IconData icon, VoidCallback? onPressed}) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Material(
-      color: onPressed == null ? Colors.grey.shade100 : Colors.indigo.shade50,
+      color: onPressed == null ? colorScheme.surfaceVariant.withOpacity(0.3) : colorScheme.primaryContainer.withOpacity(0.5),
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: onPressed,
         borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Icon(icon, size: 20, color: onPressed == null ? Colors.grey : Colors.indigo),
+          child: Icon(icon, size: 20, color: onPressed == null ? colorScheme.onSurfaceVariant.withOpacity(0.3) : colorScheme.onPrimaryContainer),
         ),
       ),
     );
