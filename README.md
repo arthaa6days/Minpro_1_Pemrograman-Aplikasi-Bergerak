@@ -1,8 +1,3 @@
-# 🎟️ Konser Island - Sistem Manajemen Tiket Konser
-
-[![Flutter](https://img.shields.io/badge/Framework-Flutter-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
-[![Supabase](https://img.shields.io/badge/Backend-Supabase-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com)
-[![Dart](https://img.shields.io/badge/Language-Dart-0175C2?logo=dart&logoColor=white)](https://dart.dev)
 
 ## 📌 Ikhtisar Proyek
 **Konser Island** adalah prototipe aplikasi mobile yang dibangun menggunakan Flutter, dirancang untuk manajemen siklus hidup tiket konser secara *end-to-end*. Aplikasi ini mengimplementasikan alur kerja **CRUD (Create, Read, Update, Delete)** lengkap yang terintegrasi dengan database relasional berbasis cloud.
