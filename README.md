@@ -1,77 +1,97 @@
-<<<<<<< HEAD
-# aplikasi_manajemen_tiket_konser
+# 🎟️ Konser Island - Sistem Manajemen Tiket Konser
 
-A new Flutter project.
-=======
-# Minpro_1_Pemrograman-Aplikasi-Bergerak
+[![Flutter](https://img.shields.io/badge/Framework-Flutter-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+[![Supabase](https://img.shields.io/badge/Backend-Supabase-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com)
+[![Dart](https://img.shields.io/badge/Language-Dart-0175C2?logo=dart&logoColor=white)](https://dart.dev)
 
-# 🎟️ Konser Island - Aplikasi Manajemen Tiket Konser
+## 📌 Ikhtisar Proyek
+**Konser Island** adalah prototipe aplikasi mobile yang dibangun menggunakan Flutter, dirancang untuk manajemen siklus hidup tiket konser secara *end-to-end*. Aplikasi ini mengimplementasikan alur kerja **CRUD (Create, Read, Update, Delete)** lengkap yang terintegrasi dengan database relasional berbasis cloud.
 
-## Deskripsi Aplikasi
-
-Konser Island adalah aplikasi mobile sederhana berbasis **Flutter** yang digunakan untuk mengelola data tiket konser. Aplikasi ini memungkinkan pengguna untuk menyimpan informasi tiket konser yang dimiliki seperti nama konser, nama artis, tanggal konser, venue, dan harga tiket.
-
-Melalui aplikasi ini, pengguna dapat dengan mudah menambahkan tiket baru, melihat daftar tiket yang sudah disimpan, mengedit informasi tiket, serta menghapus tiket yang tidak diperlukan. Aplikasi ini dibuat untuk mempelajari dasar pengembangan aplikasi mobile menggunakan Flutter serta implementasi operasi **CRUD (Create, Read, Update, Delete)**.
+Proyek ini mendemonstrasikan prinsip-prinsip *clean architecture*, desain UI yang responsif, dan integrasi backend yang aman menggunakan praktik Flutter modern.
 
 ---
 
-## Fitur Aplikasi
+## 🛠️ Teknologi & Integrasi
 
-### 1. Menampilkan Daftar Tiket
+### 1. Backend: Infrastruktur Supabase
+Aplikasi ini menggunakan **Supabase** sebagai *backend-as-a-service* (BaaS), memanfaatkan engine PostgreSQL untuk persistensi data.
+*   **Pengambilan Data Real-time**: Diimplementasikan melalui client `supabase_flutter`.
+*   **Keamanan**: Kredensial diabstraksikan ke dalam *environment variables* menggunakan `flutter_dotenv` untuk mencegah kebocoran data sensitif.
+*   **Inisialisasi**:
+    ```dart
+    await Supabase.initialize(
+      url: dotenv.env['SUPABASE_URL']!,
+      anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+    );
+    ```
 
-Halaman utama aplikasi menampilkan seluruh tiket konser yang telah ditambahkan oleh pengguna. Setiap tiket ditampilkan dalam bentuk kartu yang berisi informasi konser seperti nama konser, artis, tanggal, venue, dan harga tiket.
-
-### 2. Menambahkan Tiket
-
-Pengguna dapat menambahkan tiket konser baru melalui tombol **(+)** yang tersedia pada halaman utama. Setelah tombol ditekan, pengguna akan diarahkan ke halaman form untuk mengisi data tiket konser.
-
-### 3. Mengedit Tiket
-
-Setiap tiket yang telah ditambahkan dapat diedit dengan menekan ikon **edit**. Data tiket yang dipilih akan ditampilkan kembali di halaman form sehingga pengguna dapat memperbarui informasi tiket tersebut.
-
-### 4. Menghapus Tiket
-
-Pengguna dapat menghapus tiket konser dengan menekan ikon **delete** pada tiket yang diinginkan. Sebelum tiket dihapus, aplikasi akan menampilkan dialog konfirmasi untuk memastikan tindakan pengguna.
+### 2. Koneksi Database & Skema
+Aplikasi berkomunikasi dengan tabel `konser`. Pemetaan data ditangani melalui model `Ticket` khusus dengan factory `fromJson` dan `toJson`.
+*   **Pemetaan Input ke DB**: Input *front-end* dari `TextFormField` ditangkap melalui `TextEditingController` dan disanitasi sebelum dikirim ke Supabase:
+    ```dart
+    final ticketData = {
+      'nama_konser': _nameController.text.trim(),
+      'nama_artis': _artistController.text.trim(),
+      'tanggal_konser': _dateController.text,
+      'lokasi_venue': _venueController.text.trim(),
+      'harga': _priceController.text.trim(),
+    };
+    ```
 
 ---
 
-## Widget yang Digunakan
+## 🚀 Fitur Utama
 
-Beberapa widget utama yang digunakan dalam pembuatan aplikasi ini antara lain:
+### 📊 Manajemen Data Dinamis
+*   **Paginasi Teroptimasi**: Mengimplementasikan seleksi rentang di sisi server (`.range(from, to)`) untuk menangani dataset besar secara efisien.
+*   **List/Grid Responsif**: Menggunakan `LayoutBuilder` untuk beralih antara `ListView` (mobile) dan `GridView` (tablet/desktop) berdasarkan batasan *viewport*.
 
-* **MaterialApp**
-  Digunakan sebagai root widget untuk mengatur struktur dasar aplikasi Flutter berbasis Material Design.
+### 📝 Penanganan Form Lanjutan
+*   **Validasi**: Menggunakan `GlobalKey<FormState>` untuk validasi input yang sinkron.
+*   **Orkestrasi Tanggal**: Integrasi `showDatePicker` untuk pemilihan tanggal standar ISO-8601.
 
-* **Scaffold**
-  Digunakan sebagai kerangka utama halaman yang berisi AppBar, body, dan FloatingActionButton.
+---
 
-* **AppBar**
-  Menampilkan judul aplikasi pada bagian atas halaman.
+## 🧩 Implementasi Widget Lanjutan
+Selain komponen Material standar, proyek ini menggunakan beberapa widget khusus untuk memastikan UX yang berkualitas tinggi:
 
-* **ListView.builder**
-  Digunakan untuk menampilkan daftar tiket konser secara dinamis.
+| Widget | Tujuan |
+| :--- | :--- |
+| **`LayoutBuilder`** | Adaptasi UI dinamis berdasarkan batasan *parent* (Desain Responsif). |
+| **`SafeArea`** | Memastikan kompatibilitas UI di seluruh perangkat dengan *notch* atau indikator beranda. |
+| **`CircularProgressIndicator`** | Umpan balik visual selama operasi Supabase yang bersifat asinkron. |
+| **`InkWell`** | Menyediakan efek riak (*ripple*) Material dan deteksi gestur pada kartu kustom. |
+| **`SnackBar`** | Umpan balik transien untuk keberhasilan/kegagalan CRUD (perilaku *floating*). |
+| **`IntrinsicHeight`** | Sinkronisasi perataan *cross-axis* untuk tata letak kartu yang kompleks. |
+| **`ConstrainedBox`** | Menetapkan lebar maksimum pada layar besar untuk menjaga keterbacaan. |
+| **`SingleChildScrollView`** | Mencegah kesalahan *overflow* pada layar kecil dan saat interaksi keyboard. |
 
-* **Card**
-  Digunakan untuk menampilkan setiap data tiket dalam bentuk kartu agar tampilan lebih rapi.
+---
 
-* **ListTile**
-  Digunakan untuk menampilkan informasi tiket seperti nama konser, artis, tanggal, dan venue.
+## ⚙️ Instalasi & Pengaturan
 
-* **FloatingActionButton**
-  Tombol untuk menambahkan tiket konser baru.
+1. **Konfigurasi Lingkungan**:
+   Buat file `.env` di direktori root:
+   ```env
+   SUPABASE_URL=project_url_anda
+   SUPABASE_ANON_KEY=anon_key_anda
+   ```
 
-* **IconButton**
-  Digunakan untuk tombol edit dan delete pada setiap tiket.
+2. **Dependensi**:
+   ```bash
+   flutter pub get
+   ```
 
-* **AlertDialog**
-  Digunakan untuk menampilkan konfirmasi sebelum tiket dihapus.
+3. **Skema Database**:
+   Pastikan tabel `konser` di Supabase Anda memiliki kolom berikut:
+   - `id` (int8, primary key)
+   - `nama_konser` (text)
+   - `nama_artis` (text)
+   - `tanggal_konser` (text)
+   - `lokasi_venue` (text)
+   - `harga` (text)
 
-* **TextFormField**
-  Digunakan sebagai input form untuk mengisi data tiket seperti nama konser, artis, venue, tanggal, dan harga.
+---
 
-* **Navigator**
-  Digunakan untuk berpindah halaman dari HomePage ke halaman form tiket dan kembali lagi setelah data disimpan.
-
-* **TextEditingController**
-  Digunakan untuk mengontrol dan mengambil nilai dari input form pada halaman penambahan tiket.
->>>>>>> 85a10e35a78dacd2644044269a39f30ed90c2f8d
+## 👨‍💻 Catatan Pengembang
+Proyek ini memprioritaskan **State Management** melalui `setState` untuk kesederhanaan pada iterasi ini, dengan pemisahan yang jelas antara komponen UI dan model data. Penanganan kesalahan (*error handling*) diimplementasikan di seluruh batas asinkron untuk memastikan stabilitas aplikasi.
