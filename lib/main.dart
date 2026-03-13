@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aplikasi_manajemen_tiket_konser/page/home_page.dart';
+import 'package:aplikasi_manajemen_tiket_konser/page/login_page.dart';
 import 'package:aplikasi_manajemen_tiket_konser/provider/theme_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -56,7 +57,7 @@ class MyApp extends StatelessWidget {
           themeMode: themeProvider.themeMode,
           theme: _buildTheme(Brightness.light),
           darkTheme: _buildTheme(Brightness.dark),
-          home: const HomePage(),
+          home: const AuthGate(),
         );
       },
     );
@@ -104,6 +105,29 @@ class MyApp extends StatelessWidget {
           foregroundColor: isDark ? Colors.black87 : Colors.white,
         ),
       ),
+    );
+  }
+}
+
+class AuthGate extends StatelessWidget {
+  const AuthGate({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<AuthState>(
+      stream: Supabase.instance.client.auth.onAuthStateChange,
+      builder: (context, snapshot) {
+        // Mendapatkan session terbaru baik dari stream atau dari instance langsung
+        final session = snapshot.hasData 
+            ? snapshot.data!.session 
+            : Supabase.instance.client.auth.currentSession;
+
+        if (session != null) {
+          return const HomePage();
+        } else {
+          return const LoginPage();
+        }
+      },
     );
   }
 }
