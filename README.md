@@ -1,5 +1,5 @@
 
-## 📌 Ikhtisar Proyek
+## PROJECT | APLIKASI MANAJEMEN TIKET KONSER | MINPRO 1 DAN 2
 **Konser Island** adalah prototipe aplikasi mobile yang dibangun menggunakan Flutter, dirancang untuk manajemen siklus hidup tiket konser secara *end-to-end*. Aplikasi ini mengimplementasikan alur kerja **CRUD (Create, Read, Update, Delete)** lengkap yang terintegrasi dengan database relasional berbasis cloud.
 
 Proyek ini mendemonstrasikan prinsip-prinsip *clean architecture*, desain UI yang responsif, dan integrasi backend yang aman menggunakan praktik Flutter modern.
